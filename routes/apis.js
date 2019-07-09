@@ -10,6 +10,7 @@ router.get('/admin/restaurants/create', adminController.createRestaurant)
 router.get('/admin/restaurants/:id', adminController.getRestaurant)
 router.post('/admin/restaurants', upload.single('image'), adminController.postRestaurant)
 router.get('/admin/restaurants/:id/edit', adminController.editRestaurant)
+router.put('/admin/restaurants/:id', upload.single('image'), adminController.putRestaurant)
 router.delete('/admin/restaurants/:id', adminController.deleteRestaurant)
 
 router.get('/admin/categories', categoryController.getCategories)
