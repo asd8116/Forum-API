@@ -19,6 +19,16 @@ const categoryService = {
       await Category.create({ name: req.body.name })
       callback({ status: 'success', message: 'category was successfully created' })
     }
+  },
+
+  putCategory: async (req, res, callback) => {
+    if (!req.body.name) {
+      return callback({ status: 'error', message: "name didn't exist" })
+    } else {
+      const category = await Category.findByPk(req.params.id)
+      await category.update(req.body)
+      callback({ status: 'success', message: 'category was successfully created' })
+    }
   }
 }
 
