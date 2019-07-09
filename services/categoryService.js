@@ -29,6 +29,12 @@ const categoryService = {
       await category.update(req.body)
       callback({ status: 'success', message: 'category was successfully created' })
     }
+  },
+
+  deleteCategory: async (req, res, callback) => {
+    const category = await Category.findByPk(req.params.id)
+    await category.destroy()
+    callback({ status: 'success', message: '' })
   }
 }
 

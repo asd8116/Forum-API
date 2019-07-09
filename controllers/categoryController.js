@@ -31,10 +31,12 @@ const categoryController = {
     })
   },
 
-  deleteCategory: async (req, res) => {
-    const category = await Category.findByPk(req.params.id)
-    await category.destroy()
-    res.redirect('/admin/categories')
+  deleteCategory: (req, res) => {
+    categoryService.deleteCategory(req, res, data => {
+      if (data['status'] === 'success') {
+        return res.redirect('/admin/categories')
+      }
+    })
   }
 }
 
