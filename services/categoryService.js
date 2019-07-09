@@ -10,6 +10,15 @@ const categoryService = {
     } else {
       callback({ categories: categories })
     }
+  },
+
+  postCategory: async (req, res, callback) => {
+    if (!req.body.name) {
+      return callback({ status: 'error', message: "name didn't exist" })
+    } else {
+      await Category.create({ name: req.body.name })
+      callback({ status: 'success', message: 'category was successfully created' })
+    }
   }
 }
 
