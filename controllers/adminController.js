@@ -109,10 +109,12 @@ const adminController = {
     }
   },
 
-  deleteRestaurant: async (req, res) => {
-    const restaurant = await Restaurant.findByPk(req.params.id)
-    await restaurant.destroy()
-    res.redirect('/admin/restaurants')
+  deleteRestaurant: (req, res) => {
+    adminService.deleteRestaurant(req, res, data => {
+      if (data['status'] === 'success') {
+        return res.redirect('/admin/restaurants')
+      }
+    })
   },
 
   editUsers: async (req, res) => {

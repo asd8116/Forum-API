@@ -13,6 +13,12 @@ const adminService = {
   getRestaurant: async (req, res, callback) => {
     const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category] })
     callback({ restaurant: restaurant })
+  },
+
+  deleteRestaurant: async (req, res, callback) => {
+    const restaurant = await Restaurant.findByPk(req.params.id)
+    await restaurant.destroy()
+    callback({ status: 'success', message: '' })
   }
 }
 
