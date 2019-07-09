@@ -56,9 +56,10 @@ const adminController = {
     }
   },
 
-  getRestaurant: async (req, res) => {
-    const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category] })
-    res.render('admin/restaurant', { restaurant: restaurant })
+  getRestaurant: (req, res) => {
+    adminService.getRestaurant(req, res, data => {
+      return res.render('admin/restaurant', data)
+    })
   },
 
   editRestaurant: async (req, res) => {

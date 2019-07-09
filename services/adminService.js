@@ -8,6 +8,11 @@ const adminService = {
   getRestaurants: async (req, res, callback) => {
     const restaurants = await Restaurant.findAll({ include: [Category] })
     callback({ restaurants: restaurants })
+  },
+
+  getRestaurant: async (req, res, callback) => {
+    const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category] })
+    callback({ restaurant: restaurant })
   }
 }
 
