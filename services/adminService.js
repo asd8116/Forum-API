@@ -15,6 +15,11 @@ const adminService = {
     callback({ restaurant: restaurant })
   },
 
+  createRestaurant: async (req, res, callback) => {
+    const categories = await Category.findAll()
+    callback({ categories: categories })
+  },
+
   postRestaurant: async (req, res, callback) => {
     if (!req.body.name) {
       return callback({ status: 'error', message: "name didn't exist" })

@@ -12,9 +12,10 @@ const adminController = {
     })
   },
 
-  createRestaurant: async (req, res) => {
-    const categories = await Category.findAll()
-    res.render('admin/create', { categories: categories })
+  createRestaurant: (req, res) => {
+    adminService.createRestaurant(req, res, data => {
+      return res.render('admin/create', data)
+    })
   },
 
   postRestaurant: (req, res) => {
