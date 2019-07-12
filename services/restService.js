@@ -32,6 +32,27 @@ const restService = {
     callback({ restaurants: data, categories, categoryId, page, totalPage, prev, next })
   },
 
+  getRestaurant: async (req, res, callback) => {
+    const restaurant = await Restaurant.findByPk(req.params.id, {
+      include: [Category, { model: User, as: 'FavoritedUsers' }, { model: User, as: 'LikedUsers' }, { model: Comment, include: [User] }]
+    })
+    const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id)
+    const isLiked = restaurant.LikedUsers.map(d => d.id).includes(req.user.id)
+    restaurant.viewCounts += 1
+
+    await restaurant.save()
+
+    callback({ restaurant: restaurant, isFavorited: isFavorited, isLiked: isLiked })
+  },
+
+  getDashboard: async (req, res, callback) => {
+    const restaurant = await Restaurant.findByPk(req.params.id, {
+      include: [Category, { model: User, as: 'FavoritedUsers' }, { model: Comment, include: [User] }]
+    })
+
+    callback({ restaurant: restaurant })
+  },
+
   getFeeds: async (req, res, callback) => {
     const restaurants = await Restaurant.findAll({ limit: 10, order: [['createdAt', 'DESC']], include: [Category] })
     const comments = await Comment.findAll({ limit: 10, order: [['createdAt', 'DESC']], include: [User, Restaurant] })

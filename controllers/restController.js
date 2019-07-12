@@ -10,29 +10,22 @@ const restController = {
     })
   },
 
-  getRestaurant: async (req, res) => {
-    const restaurant = await Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: User, as: 'FavoritedUsers' }, { model: User, as: 'LikedUsers' }, { model: Comment, include: [User] }]
+  getRestaurant: (req, res) => {
+    restService.getRestaurant(req, res, data => {
+      return res.render('restaurant', data)
     })
-    const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id)
-    const isLiked = restaurant.LikedUsers.map(d => d.id).includes(req.user.id)
-    restaurant.viewCounts += 1
+  },
 
-    await restaurant.save()
-    res.render('restaurant', { restaurant: restaurant, isFavorited: isFavorited, isLiked: isLiked })
+  getDashboard: (req, res) => {
+    restService.getDashboard(req, res, data => {
+      return res.render('dashboard', data)
+    })
   },
 
   getFeeds: (req, res) => {
     restService.getFeeds(req, res, data => {
       return res.render('feeds', data)
     })
-  },
-
-  getDashboard: async (req, res) => {
-    const restaurant = await Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: User, as: 'FavoritedUsers' }, { model: Comment, include: [User] }]
-    })
-    res.render('dashboard', { restaurant: restaurant })
   },
 
   getTopRestaurants: (req, res) => {
