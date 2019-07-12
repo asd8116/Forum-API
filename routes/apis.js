@@ -2,7 +2,8 @@ const express = require('express')
 const router = express.Router()
 const adminController = require('../controllers/api/adminController')
 const categoryController = require('../controllers/api/categoryController')
-const userController = require('../controllers/api/userController.js')
+const userController = require('../controllers/api/userController')
+const restController = require('../controllers/api/restController')
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
 const passport = require('../config/passport')
@@ -18,6 +19,10 @@ const authenticatedAdmin = (req, res, next) => {
     return res.json({ status: 'error', message: 'permission denied' })
   }
 }
+
+router.get('/restaurants', authenticated, restController.getRestaurants)
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 
 router.get('/users/top', authenticated, userController.getTopUser)
 router.get('/users/:id', authenticated, userController.getUser)
