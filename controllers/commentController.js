@@ -14,7 +14,7 @@ const commentController = {
   deleteComment: (req, res) => {
     commentService.deleteComment(req, res, data => {
       if (data['status'] === 'success') {
-        return res.redirect(`/restaurants/${req.body.restaurantId}`)
+        return res.redirect('back')
       }
     })
   }
