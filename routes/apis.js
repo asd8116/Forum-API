@@ -37,7 +37,9 @@ router.put('/admin/categories/:id', authenticated, authenticatedAdmin, categoryC
 router.delete('/admin/categories/:id', authenticated, authenticatedAdmin, categoryController.deleteCategory)
 
 // JWT signin
+router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
+router.get('/signin', userController.signInPage)
 router.post('/signin', userController.signIn)
 
 module.exports = router

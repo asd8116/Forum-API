@@ -11,10 +11,18 @@ const ExtractJwt = passportJWT.ExtractJwt
 const JwtStrategy = passportJWT.Strategy
 
 let userController = {
+  signUpPage: (req, res) => {
+    return res.json()
+  },
+
   signUp: (req, res) => {
     userService.signUp(req, res, data => {
       return res.json(data)
     })
+  },
+
+  signInPage: (req, res) => {
+    return res.json()
   },
 
   signIn: async (req, res) => {
