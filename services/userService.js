@@ -52,6 +52,33 @@ const userService = {
     }, new Map())
 
     callback({ profile: user, isFollowed: isFollowed, restaurantArray: [...map.values()] })
+  },
+
+  editUser: async (req, res, callback) => {
+    const user = await User.findByPk(req.params.id)
+    callback({ user: user })
+  },
+
+  putUser: async (req, res, callback) => {
+    if (Number(req.params.id) !== req.user.id) {
+      return res.redirect(`/users/${req.user.id}`)
+    }
+
+    const { file } = req
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID)
+      imgur.upload(file.path, async (err, img) => {
+        const userYes = await User.findByPk(req.params.id)
+        await userYes.update({ name: req.body.name, image: file ? img.data.link : user.image })
+
+        callback({ status: 'success', message: 'user was successfully update' })
+      })
+    } else {
+      const userNO = await User.findByPk(req.params.id)
+      await userNO.update({ name: req.body.name })
+
+      callback({ status: 'success', message: 'user was successfully update' })
+    }
   }
 }
 

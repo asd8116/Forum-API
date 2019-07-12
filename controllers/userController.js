@@ -48,31 +48,18 @@ const userController = {
     })
   },
 
-  editUser: async (req, res) => {
-    const user = await User.findByPk(req.params.id)
-    res.render('users/edit', { user: user })
+  editUser: (req, res) => {
+    userService.editUser(req, res, data => {
+      return res.render('users/edit', data)
+    })
   },
 
-  putUser: async (req, res) => {
-    if (Number(req.params.id) !== req.user.id) {
-      return res.redirect(`/users/${req.user.id}`)
-    }
-
-    const { file } = req
-    if (file) {
-      imgur.setClientID(IMGUR_CLIENT_ID)
-      imgur.upload(file.path, async (err, img) => {
-        const userYes = await User.findByPk(req.params.id)
-        await userYes.update({ name: req.body.name, image: file ? img.data.link : user.image })
-
-        res.redirect(`/users/${req.params.id}`)
-      })
-    } else {
-      const userNO = await User.findByPk(req.params.id)
-      await userNO.update({ name: req.body.name })
-
-      res.redirect(`/users/${req.params.id}`)
-    }
+  putUser: (req, res) => {
+    userService.putUser(req, res, data => {
+      if (data['status'] === 'success') {
+        return res.redirect(`/users/${req.params.id}`)
+      }
+    })
   },
 
   addFavorite: async (req, res) => {
