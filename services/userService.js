@@ -22,6 +22,36 @@ const userService = {
         callback({ status: 'success', message: '成功註冊帳號！' })
       }
     }
+  },
+
+  getTopUser: async (req, res, callback) => {
+    const users = await User.findAll({ include: [{ model: User, as: 'Followers' }] })
+    let usersData = users.map(user => ({
+      ...user.dataValues,
+      // 計算追蹤者人數
+      followerCount: user.Followers.length,
+      // 判斷目前登入使用者是否已追蹤該 User 物件
+      isFollowed: req.user.Followings.map(d => d.id).includes(user.id)
+    }))
+
+    usersData = usersData.sort((a, b) => b.followerCount - a.followerCount)
+    callback({ users: usersData })
+  },
+
+  getUser: async (req, res, callback) => {
+    const user = await User.findByPk(req.params.id, {
+      include: [{ model: Comment, include: [Restaurant] }, { model: Restaurant, as: 'FavoritedRestaurants' }, { model: User, as: 'Followings' }, { model: User, as: 'Followers' }]
+    })
+    const isFollowed = req.user.Followings.map(d => d.id).includes(user.id)
+
+    let map = user.Comments.reduce((map, { Restaurant }) => {
+      if (Restaurant && !map.has(Restaurant.id)) {
+        map.set(Restaurant.id, Restaurant)
+      }
+      return map
+    }, new Map())
+
+    callback({ profile: user, isFollowed: isFollowed, restaurantArray: [...map.values()] })
   }
 }
 

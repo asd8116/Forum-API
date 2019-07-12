@@ -36,20 +36,16 @@ const userController = {
     res.redirect('/signin')
   },
 
-  getUser: async (req, res) => {
-    const user = await User.findByPk(req.params.id, {
-      include: [{ model: Comment, include: [Restaurant] }, { model: Restaurant, as: 'FavoritedRestaurants' }, { model: User, as: 'Followings' }, { model: User, as: 'Followers' }]
+  getTopUser: (req, res) => {
+    userService.getTopUser(req, res, data => {
+      return res.render('topUser', data)
     })
-    const isFollowed = req.user.Followings.map(d => d.id).includes(user.id)
+  },
 
-    let map = user.Comments.reduce((map, { Restaurant }) => {
-      if (Restaurant && !map.has(Restaurant.id)) {
-        map.set(Restaurant.id, Restaurant)
-      }
-      return map
-    }, new Map())
-
-    res.render('users/profile', { profile: user, isFollowed: isFollowed, restaurantArray: [...map.values()] })
+  getUser: (req, res) => {
+    userService.getUser(req, res, data => {
+      return res.render('users/profile', data)
+    })
   },
 
   editUser: async (req, res) => {
@@ -99,20 +95,6 @@ const userController = {
     const like = await Like.findOne({ where: { UserId: req.user.id, RestaurantId: req.params.restaurantId } })
     await like.destroy()
     res.redirect('back')
-  },
-
-  getTopUser: async (req, res) => {
-    const users = await User.findAll({ include: [{ model: User, as: 'Followers' }] })
-    let usersData = users.map(user => ({
-      ...user.dataValues,
-      // 計算追蹤者人數
-      followerCount: user.Followers.length,
-      // 判斷目前登入使用者是否已追蹤該 User 物件
-      isFollowed: req.user.Followings.map(d => d.id).includes(user.id)
-    }))
-
-    usersData = usersData.sort((a, b) => b.followerCount - a.followerCount)
-    res.render('topUser', { users: usersData })
   },
 
   addFollowing: async (req, res) => {

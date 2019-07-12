@@ -51,6 +51,18 @@ let userController = {
         isAdmin: user.isAdmin
       }
     })
+  },
+
+  getTopUser: (req, res) => {
+    userService.getTopUser(req, res, data => {
+      return res.json(data)
+    })
+  },
+
+  getUser: (req, res) => {
+    userService.getUser(req, res, data => {
+      return res.json(data)
+    })
   }
 }
 
