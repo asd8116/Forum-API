@@ -3,6 +3,7 @@ const db = require('../../models')
 const { User, Comment, Restaurant, Favorite, Like, Followship } = db
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+const userService = require('../../services/userService')
 // JWT
 const jwt = require('jsonwebtoken')
 const passportJWT = require('passport-jwt')
@@ -10,6 +11,12 @@ const ExtractJwt = passportJWT.ExtractJwt
 const JwtStrategy = passportJWT.Strategy
 
 let userController = {
+  signUp: (req, res) => {
+    userService.signUp(req, res, data => {
+      return res.json(data)
+    })
+  },
+
   signIn: async (req, res) => {
     // 檢查必要資料
     if (!req.body.email || !req.body.password) {

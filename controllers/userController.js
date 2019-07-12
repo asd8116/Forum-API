@@ -3,32 +3,22 @@ const db = require('../models')
 const { User, Comment, Restaurant, Favorite, Like, Followship } = db
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+const userService = require('../services/userService')
 
 const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
   },
 
-  signUp: async (req, res) => {
-    if (req.body.passwordCheck !== req.body.password) {
-      req.flash('error_messages', '兩次密碼輸入不同！')
-      return res.redirect('/signup')
-    } else {
-      const user = await User.findOne({ where: { email: req.body.email } })
-      if (user) {
-        req.flash('error_messages', '信箱重複！')
-        return res.redirect('/signup')
-      } else {
-        await User.create({
-          name: req.body.name,
-          email: req.body.email,
-          password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null)
-        })
-
-        req.flash('success_messages', '成功註冊帳號！')
-        res.redirect('/signin')
+  signUp: (req, res) => {
+    userService.signUp(req, res, data => {
+      if (data['status'] === 'error') {
+        req.flash('error_messages', data['message'])
+        return res.redirect('back')
       }
-    }
+      req.flash('success_messages', data['message'])
+      res.redirect('/signin')
+    })
   },
 
   signInPage: (req, res) => {
