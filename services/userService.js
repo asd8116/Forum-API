@@ -79,6 +79,39 @@ const userService = {
 
       callback({ status: 'success', message: 'user was successfully update' })
     }
+  },
+
+  addFavorite: async (req, res, callback) => {
+    await Favorite.create({ UserId: req.user.id, RestaurantId: req.params.restaurantId })
+    callback({ status: 'success', message: '' })
+  },
+
+  removeFavorite: async (req, res, callback) => {
+    const favorite = await Favorite.findOne({ where: { UserId: req.user.id, RestaurantId: req.params.restaurantId } })
+    await favorite.destroy()
+    callback({ status: 'success', message: '' })
+  },
+
+  addLike: async (req, res, callback) => {
+    await Like.create({ UserId: req.user.id, RestaurantId: req.params.restaurantId })
+    callback({ status: 'success', message: '' })
+  },
+
+  removeLike: async (req, res, callback) => {
+    const like = await Like.findOne({ where: { UserId: req.user.id, RestaurantId: req.params.restaurantId } })
+    await like.destroy()
+    callback({ status: 'success', message: '' })
+  },
+
+  addFollowing: async (req, res, callback) => {
+    await Followship.create({ followerId: req.user.id, followingId: req.params.userId })
+    callback({ status: 'success', message: '' })
+  },
+
+  removeFollowing: async (req, res, callback) => {
+    const followship = await Followship.findOne({ where: { followerId: req.user.id, followingId: req.params.userId } })
+    await followship.destroy()
+    callback({ status: 'success', message: '' })
   }
 }
 

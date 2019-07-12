@@ -62,37 +62,52 @@ const userController = {
     })
   },
 
-  addFavorite: async (req, res) => {
-    await Favorite.create({ UserId: req.user.id, RestaurantId: req.params.restaurantId })
-    res.redirect('back')
+  addFavorite: (req, res) => {
+    userService.addFavorite(req, res, data => {
+      if (data['status'] === 'success') {
+        return res.redirect('back')
+      }
+    })
   },
 
-  removeFavorite: async (req, res) => {
-    const favorite = await Favorite.findOne({ where: { UserId: req.user.id, RestaurantId: req.params.restaurantId } })
-    await favorite.destroy()
-    res.redirect('back')
+  removeFavorite: (req, res) => {
+    userService.removeFavorite(req, res, data => {
+      if (data['status'] === 'success') {
+        return res.redirect('back')
+      }
+    })
   },
 
-  addLike: async (req, res) => {
-    await Like.create({ UserId: req.user.id, RestaurantId: req.params.restaurantId })
-    res.redirect('back')
+  addLike: (req, res) => {
+    userService.addLike(req, res, data => {
+      if (data['status'] === 'success') {
+        return res.redirect('back')
+      }
+    })
   },
 
-  removeLike: async (req, res) => {
-    const like = await Like.findOne({ where: { UserId: req.user.id, RestaurantId: req.params.restaurantId } })
-    await like.destroy()
-    res.redirect('back')
+  removeLike: (req, res) => {
+    userService.removeLike(req, res, data => {
+      if (data['status'] === 'success') {
+        return res.redirect('back')
+      }
+    })
   },
 
-  addFollowing: async (req, res) => {
-    await Followship.create({ followerId: req.user.id, followingId: req.params.userId })
-    res.redirect('back')
+  addFollowing: (req, res) => {
+    userService.addFollowing(req, res, data => {
+      if (data['status'] === 'success') {
+        return res.redirect('back')
+      }
+    })
   },
 
-  removeFollowing: async (req, res) => {
-    const followship = await Followship.findOne({ where: { followerId: req.user.id, followingId: req.params.userId } })
-    await followship.destroy()
-    res.redirect('back')
+  removeFollowing: (req, res) => {
+    userService.removeFollowing(req, res, data => {
+      if (data['status'] === 'success') {
+        return res.redirect('back')
+      }
+    })
   }
 }
 
