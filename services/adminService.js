@@ -104,6 +104,24 @@ const adminService = {
     const restaurant = await Restaurant.findByPk(req.params.id)
     await restaurant.destroy()
     callback({ status: 'success', message: '' })
+  },
+
+  editUsers: async (req, res, callback) => {
+    const users = await User.findAll()
+    // res.render('admin/users', { users: users })
+    callback({ users: users })
+  },
+
+  putUsers: async (req, res, callback) => {
+    const user = await User.findByPk(req.params.id)
+    const { isAdmin } = user
+    const updatedAdmin = !isAdmin
+    const output = updatedAdmin ? 'admin' : 'user'
+    await user.update({ isAdmin: updatedAdmin })
+
+    // req.flash('success_messages', `${output} was successfully to update`)
+    // res.redirect('/admin/users')
+    callback({ status: 'success', message: `${output} was successfully to update` })
   }
 }
 

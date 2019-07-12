@@ -60,20 +60,18 @@ const adminController = {
     })
   },
 
-  editUsers: async (req, res) => {
-    const users = await User.findAll()
-    res.render('admin/users', { users: users })
+  editUsers: (req, res) => {
+    adminService.editUsers(req, res, data => {
+      return res.render('admin/users', data)
+    })
   },
 
-  putUsers: async (req, res) => {
-    const user = await User.findByPk(req.params.id)
-    const { isAdmin } = user
-    const updatedAdmin = !isAdmin
-    const output = updatedAdmin ? 'admin' : 'user'
-    await user.update({ isAdmin: updatedAdmin })
-
-    req.flash('success_messages', `${output} was successfully to update`)
-    res.redirect('/admin/users')
+  putUsers: (req, res) => {
+    adminService.putUsers(req, res, data => {
+      if (data['status'] === 'success') {
+        return res.redirect('/admin/users')
+      }
+    })
   }
 }
 
