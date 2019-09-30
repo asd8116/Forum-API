@@ -1,7 +1,5 @@
 const db = require('../../models')
 const { User, Restaurant, Category } = db
-const imgur = require('imgur-node-api')
-const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const adminService = require('../../services/adminService')
 
 const adminController = {
@@ -17,20 +15,8 @@ const adminController = {
     })
   },
 
-  createRestaurant: (req, res) => {
-    adminService.createRestaurant(req, res, data => {
-      return res.json(data)
-    })
-  },
-
   postRestaurant: (req, res) => {
     adminService.postRestaurant(req, res, data => {
-      return res.json(data)
-    })
-  },
-
-  editRestaurant: (req, res) => {
-    adminService.editRestaurant(req, res, data => {
       return res.json(data)
     })
   },
