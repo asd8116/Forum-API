@@ -14,7 +14,12 @@ const restService = {
       categoryId = Number(req.query.categoryId)
       whereQuery['CategoryId'] = categoryId
     }
-    const result = await Restaurant.findAndCountAll({ include: Category, where: whereQuery, offset: offset, limit: pageLimit })
+    const result = await Restaurant.findAndCountAll({
+      include: Category,
+      where: whereQuery,
+      offset: offset,
+      limit: pageLimit
+    })
     const categories = await Category.findAll()
     let page = Number(req.query.page) || 1
     let pages = Math.ceil(result.count / pageLimit)
@@ -34,7 +39,12 @@ const restService = {
 
   getRestaurant: async (req, res, callback) => {
     const restaurant = await Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: User, as: 'FavoritedUsers' }, { model: User, as: 'LikedUsers' }, { model: Comment, include: [User] }]
+      include: [
+        Category,
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' },
+        { model: Comment, include: [User] }
+      ]
     })
     const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id)
     const isLiked = restaurant.LikedUsers.map(d => d.id).includes(req.user.id)

@@ -10,6 +10,7 @@ const userService = {
       return callback({ status: 'error', message: '兩次密碼輸入不同！' })
     } else {
       const user = await User.findOne({ where: { email: req.body.email } })
+
       if (user) {
         return callback({ status: 'error', message: '信箱重複！' })
       } else {
@@ -31,16 +32,22 @@ const userService = {
       // 計算追蹤者人數
       followerCount: user.Followers.length,
       // 判斷目前登入使用者是否已追蹤該 User 物件
-      isFollowed: req.user.Followings.map(d => d.id).includes(user.id)
+      isFollowed: req.user.Followings ? req.user.Followings.map(d => d.id).includes(user.id) : false
     }))
 
     usersData = usersData.sort((a, b) => b.followerCount - a.followerCount)
+
     callback({ users: usersData })
   },
 
   getUser: async (req, res, callback) => {
     const user = await User.findByPk(req.params.id, {
-      include: [{ model: Comment, include: [Restaurant] }, { model: Restaurant, as: 'FavoritedRestaurants' }, { model: User, as: 'Followings' }, { model: User, as: 'Followers' }]
+      include: [
+        { model: Comment, include: [Restaurant] },
+        { model: Restaurant, as: 'FavoritedRestaurants' },
+        { model: User, as: 'Followings' },
+        { model: User, as: 'Followers' }
+      ]
     })
     const isFollowed = req.user.Followings.map(d => d.id).includes(user.id)
 
@@ -56,6 +63,7 @@ const userService = {
 
   editUser: async (req, res, callback) => {
     const user = await User.findByPk(req.params.id)
+
     callback({ user: user })
   },
 
@@ -83,34 +91,40 @@ const userService = {
 
   addFavorite: async (req, res, callback) => {
     await Favorite.create({ UserId: req.user.id, RestaurantId: req.params.restaurantId })
+
     callback({ status: 'success', message: '' })
   },
 
   removeFavorite: async (req, res, callback) => {
     const favorite = await Favorite.findOne({ where: { UserId: req.user.id, RestaurantId: req.params.restaurantId } })
     await favorite.destroy()
+
     callback({ status: 'success', message: '' })
   },
 
   addLike: async (req, res, callback) => {
     await Like.create({ UserId: req.user.id, RestaurantId: req.params.restaurantId })
+
     callback({ status: 'success', message: '' })
   },
 
   removeLike: async (req, res, callback) => {
     const like = await Like.findOne({ where: { UserId: req.user.id, RestaurantId: req.params.restaurantId } })
     await like.destroy()
+
     callback({ status: 'success', message: '' })
   },
 
   addFollowing: async (req, res, callback) => {
     await Followship.create({ followerId: req.user.id, followingId: req.params.userId })
+
     callback({ status: 'success', message: '' })
   },
 
   removeFollowing: async (req, res, callback) => {
     const followship = await Followship.findOne({ where: { followerId: req.user.id, followingId: req.params.userId } })
     await followship.destroy()
+
     callback({ status: 'success', message: '' })
   }
 }
