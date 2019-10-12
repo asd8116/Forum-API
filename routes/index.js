@@ -1,5 +1,5 @@
-let routes = require('./routes')
-let apis = require('./apis')
+const routes = require('./routes')
+const apis = require('./apis')
 
 module.exports = app => {
   app.use('/', routes)
